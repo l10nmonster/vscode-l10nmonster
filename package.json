@@ -10,6 +10,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l10nmonster/vscode-l10nmonster.git"
+  },
   "type": "module",
   "main": "./out/main.cjs",
   "activationEvents": [
