@@ -11,10 +11,18 @@ const l10nConsole = vscode.window.createOutputChannel('L10n Monster', {log: true
 /**
  * @param {vscode.ExtensionContext} context
  */
-export function activate() {
+export function activate(context) {
     l10nConsole.info(`L10n Monster Manager is now active!`);
     const configPath = vscode.workspace.workspaceFolders?.length > 0 && path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, 'l10nmonster.mjs');
     vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
+    context.subscriptions.push(vscode.commands.registerCommand(
+        'l10nmonster.l10nmanager',
+        async () => withMonsterManager(configPath, async () => {
+            vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
+            vscode.window.showInformationMessage('L10n Monster initialized');
+            vscode.commands.executeCommand('statusView.focus');
+        })
+    ));
     if (configPath && existsSync(configPath)) {
         l10nConsole.info(`L10n Monster config found at: ${configPath}`);
         return withMonsterManager(configPath, async mm => {
@@ -34,13 +42,7 @@ export function activate() {
         });
     } else {
         l10nConsole.error(`Could not find L10n Monster config at: ${configPath}`);
-    }        
-
-    // context.subscriptions.push(vscode.commands.registerCommand(
-    //     'l10nmonster.monster',
-    //     async () => {
-    //     }
-    // ));
+    }
 }
 
 export function deactivate() {
