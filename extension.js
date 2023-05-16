@@ -8,6 +8,12 @@ import { withMonsterManager, L10nMonsterViewTreeDataProvider } from './monsterUt
 
 const l10nConsole = vscode.window.createOutputChannel('L10n Monster', {log: true});
 
+function monsterCommand() {
+    vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
+    vscode.window.showInformationMessage('L10n Monster initialized');
+    vscode.commands.executeCommand('statusView.focus');
+}
+
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -17,11 +23,7 @@ export function activate(context) {
     vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
     context.subscriptions.push(vscode.commands.registerCommand(
         'l10nmonster.l10nmanager',
-        async () => withMonsterManager(configPath, async () => {
-            vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
-            vscode.window.showInformationMessage('L10n Monster initialized');
-            vscode.commands.executeCommand('statusView.focus');
-        })
+        () => withMonsterManager(configPath, monsterCommand)
     ));
     if (configPath && existsSync(configPath)) {
         l10nConsole.info(`L10n Monster config found at: ${configPath}`);
@@ -33,11 +35,11 @@ export function activate(context) {
             vscode.window.registerTreeDataProvider('statusView', statusViewProvider);    
             const jobsViewProvider = new L10nMonsterViewTreeDataProvider(configPath, fetchJobsPanel);
             jobsViewProvider.viewJob = viewJob;
-            vscode.commands.registerCommand('l10nmonster.viewJob', (jobGuid, hasRes) => jobsViewProvider.viewJob(jobGuid, hasRes));
+            context.subscriptions.push(vscode.commands.registerCommand('l10nmonster.viewJob', (jobGuid, hasRes) => jobsViewProvider.viewJob(jobGuid, hasRes)));
             vscode.window.registerTreeDataProvider('jobsView', jobsViewProvider);
             const analyzeViewProvider = new L10nMonsterViewTreeDataProvider(configPath, fetchAnalyzePanel);
             analyzeViewProvider.runAnalyzer = runAnalyzer;
-            vscode.commands.registerCommand('l10nmonster.runAnalyzer', (name, helpParams) => analyzeViewProvider.runAnalyzer(name, helpParams));
+            context.subscriptions.push(vscode.commands.registerCommand('l10nmonster.runAnalyzer', (name, helpParams) => analyzeViewProvider.runAnalyzer(name, helpParams)));
             vscode.window.registerTreeDataProvider('analyzeView', analyzeViewProvider);
         });
     } else {

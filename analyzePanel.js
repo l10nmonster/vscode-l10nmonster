@@ -6,7 +6,7 @@ export async function fetchAnalyzePanel(mm) {
     const analyzePanel = Object.entries(mm.analyzers).map(([name, analyzer]) => ({
         key: name,
         iconPath: vscode.ThemeIcon.File,
-        label: `${name} ${typeof analyzer.prototype.processSegment === 'function' ? '(src)' : '(tu)'}`,
+        label: `${name} ${typeof analyzer.prototype.processSegment === 'function' ? '(src)' : '(tm)'}`,
         tooltip: `${analyzer.help}`,
         command: {
             command: 'l10nmonster.runAnalyzer',
@@ -49,15 +49,3 @@ export async function runAnalyzer(name, helpParams) {
         }
     });
 }
-/*
-<h4> Created on ${new Date(req.updatedAt)}</h4>
-${res && `<h4> Last updated on ${new Date(res.updatedAt)}</h4>`}
-<table>
-    <tr><th>Id</th><th>Source (${req.sourceLang})</th><th>Translation (${req.targetLang})</th></th>
-    ${req.tus.map(tu => `<tr>
-        <td>${tu.sid}</td>
-        <td>${getPrintable(tu?.src, tu?.nsrc)}</td>
-        <td>${getPrintable(translations[tu.guid]?.tgt, translations[tu.guid]?.ntgt, inflight[tu.guid])}</td>
-    </tr>`).join('\n')}
-</table>
-*/

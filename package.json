@@ -3,7 +3,7 @@
   "displayName": "L10n Monster Manager",
   "publisher": "l10nmonster",
   "description": "UI for L10n Monster",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.78.0"
   },
