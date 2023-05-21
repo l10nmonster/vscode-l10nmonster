@@ -3,7 +3,7 @@
   "displayName": "L10n Monster Manager",
   "publisher": "l10nmonster",
   "description": "UI for L10n Monster",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -18,7 +18,7 @@
   "type": "module",
   "main": "./out/main.cjs",
   "activationEvents": [
-    "workspaceContains:/l10nmonster.mjs"
+    "workspaceContains:/l10nmonster.cjs"
   ],
   "contributes": {
     "commands": [
@@ -77,7 +77,7 @@
     "test": "node ./test/runTest.js",
     "test-compile": "tsc -p ./",
     "vscode:prepublish": "npm run esbuild-base -- --minify",
-    "esbuild-base": "esbuild ./extension.js --bundle --outfile=out/main.cjs --external:vscode --external:iconv --format=cjs --platform=node",
+    "esbuild-base": "esbuild ./extension.js --bundle --outfile=out/main.cjs --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run esbuild-base -- --sourcemap",
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
     "package": "npm run esbuild-base -- --minify && vsce package"

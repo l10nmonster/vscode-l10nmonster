@@ -13,17 +13,10 @@ function computeTotals(totals, partial) {
 }
 
 export async function fetchStatusPanel(mm) {
-    const sources = await mm.source.getResources();
-    const numSegments = sources.reduce((p, c) => p + c.segments.length, 0);
+    const stats = await mm.source.getResourceStats();
     const sourcesStatus = {
         key: 'sources',
-        label: `Sources (${sources.length.toLocaleString()})`,
-        children: [
-            {
-                key: 'segments',
-                label: `Translatable Segments: ${numSegments.toLocaleString()}`
-            }
-        ]
+        label: `Sources (${stats.length.toLocaleString()})`,
     };
     const translationStatus = {
         key: 'translationStatus',

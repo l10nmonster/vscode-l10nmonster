@@ -8,19 +8,19 @@ import { withMonsterManager, L10nMonsterViewTreeDataProvider } from './monsterUt
 
 const l10nConsole = vscode.window.createOutputChannel('L10n Monster', {log: true});
 
-function monsterCommand() {
-    vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
+async function monsterCommand() {
+    // await vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
     vscode.window.showInformationMessage('L10n Monster initialized');
-    vscode.commands.executeCommand('statusView.focus');
+    await vscode.commands.executeCommand('statusView.focus');
 }
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-export function activate(context) {
+export async function activate(context) {
     l10nConsole.info(`L10n Monster Manager is now active!`);
-    const configPath = vscode.workspace.workspaceFolders?.length > 0 && path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, 'l10nmonster.mjs');
-    vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
+    const configPath = vscode.workspace.workspaceFolders?.length > 0 && path.resolve(vscode.workspace.workspaceFolders[0].uri.fsPath, 'l10nmonster.cjs');
+    // await vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
     context.subscriptions.push(vscode.commands.registerCommand(
         'l10nmonster.l10nmanager',
         () => withMonsterManager(configPath, monsterCommand)
@@ -30,7 +30,7 @@ export function activate(context) {
         return withMonsterManager(configPath, async mm => {
             const printCapabilities = cap => Object.entries(cap).filter(e => e[1]).map(e => e[0]).join(', ');
             l10nConsole.info(`L10n Monster initialized. Supported commands: ${printCapabilities(mm.capabilities)}`);
-            vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
+            await vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', true);
             const statusViewProvider = new L10nMonsterViewTreeDataProvider(configPath, fetchStatusPanel);
             vscode.window.registerTreeDataProvider('statusView', statusViewProvider);    
             const jobsViewProvider = new L10nMonsterViewTreeDataProvider(configPath, fetchJobsPanel);
@@ -44,10 +44,11 @@ export function activate(context) {
         });
     } else {
         l10nConsole.error(`Could not find L10n Monster config at: ${configPath}`);
+        await vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
     }
 }
 
-export function deactivate() {
+export async function deactivate() {
     l10nConsole.info(`L10n Monster Manager was deactivated!`);
-    vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
+    await vscode.commands.executeCommand('setContext', 'l10nMonsterEnabled', false);
 }
